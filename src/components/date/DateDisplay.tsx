@@ -1,6 +1,6 @@
 import useDay from "hooks/useDay"
 
-export default function Date() {
+export default function DateDisplay() {
     const day = useDay();
 
     return (<div className="flex flex-col">
