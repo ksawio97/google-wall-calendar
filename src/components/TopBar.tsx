@@ -4,7 +4,7 @@ import Weather from "./weather/Weather";
 
 function TopBar() {
     return (
-        <div className="p-4 w-full bg-red-700 h-auto flex flex-row gap-4 center place-items-center">
+        <div className="p-4 w-full bg-slate-600 text-white h-auto flex flex-row gap-4 center place-items-center">
             <Clock></Clock> 
             <DateDisplay></DateDisplay>
             <Weather></Weather>
