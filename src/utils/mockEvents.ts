@@ -15,9 +15,9 @@ export default function mockEvents() {
     };
 
     // Define some reusable event types
-    const workType: CalendarEventType = { name: "Work", color: "text-blue-500" };
-    const personalType: CalendarEventType = { name: "Personal", color: "text-emerald-500" };
-    const urgentType: CalendarEventType = { name: "Urgent", color: "text-red-500" };
+    const workType: CalendarEventType = { name: "Work", txtcolor: "text-blue-300", bgcolor: "bg-blue-900" };
+    const personalType: CalendarEventType = { name: "Personal", txtcolor: "text-emerald-300", bgcolor: "bg-emerald-900" };
+    const urgentType: CalendarEventType = { name: "Urgent", txtcolor: "text-red-300", bgcolor: "bg-red-900" };
 
     const mockData: CalendarEvent[] = [
         {
@@ -47,8 +47,37 @@ export default function mockEvents() {
             title: "Car Service",
             // 1 week from now
             start: createDate(7, 8, 30), // 8:30 AM
-            end: createDate(7, 12, 0),   // 12:00 PM
+            end: createDate(7, 12, 0),   // 12:00 AM
             type: personalType,
+        },
+
+        {
+            title: "Doctor visit",
+            // 1 week from now
+            start: createDate(7, 13, 30), // 13:30 AM
+            end: createDate(7, 15, 0),   // 3:00 PM
+            type: personalType,
+        },
+        {
+            title: "Job interview",
+            // 1 week from now
+            start: createDate(7, 16, 0), // 4:00 AM
+            end: createDate(7, 18, 0),   // 6:00 PM
+            type: workType,
+        },
+        {
+            title: "Friends meeting",
+            // 1 week from now
+            start: createDate(7, 19, 0), // 7:00 AM
+            end: createDate(7, 23, 0),   // 11:00 PM
+            type: personalType,
+        },
+        {
+            title: "Q3 Planning Final Review",
+            // 3 days from now
+            start: createDate(3, 13, 0), // 1:00 PM
+            end: createDate(3, 14, 30),  // 2:30 PM
+            type: urgentType,
         },
         {
             title: "Q3 Planning Final Review",

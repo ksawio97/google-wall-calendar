@@ -1,6 +1,7 @@
 type CalendarEventType = {
     name: string;
-    color?: string;
+    bgcolor?: string;
+    txtcolor?: string;
 }
 
 export default CalendarEventType;
