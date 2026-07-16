@@ -22,7 +22,6 @@ export default function mockEvents() {
     const mockData: CalendarEvent[] = [
         {
             title: "Yesterday's Sync",
-            description: "Reviewing last week's tickets.",
             // -1 day offset = Yesterday
             start: createDate(-1, 10, 0), // 10:00 AM
             end: createDate(-1, 11, 30),  // 11:30 AM
@@ -37,7 +36,6 @@ export default function mockEvents() {
         },
         {
             title: "Team Offsite / Conference",
-            description: "Multi-day event spanning over the weekend.",
             // 2 days from now until 4 days from now
             start: createDate(2, 9, 0),  // 9:00 AM
             end: createDate(4, 17, 0),   // 5:00 PM

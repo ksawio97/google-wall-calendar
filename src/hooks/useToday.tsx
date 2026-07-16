@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-export default function useDay() {
+export default function useToday() {
   const [currentDate, setCurrentDate] = useState(new Date());
 
   useEffect(() => {

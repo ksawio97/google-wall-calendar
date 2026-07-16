@@ -1,4 +1,4 @@
-import useDay from "hooks/useDay";
+import useToday from "hooks/useToday";
 import useEvents from "hooks/useEvents";
 import { useMemo } from "react";
 import CalendarEvent from "types/CalendarEvent";
@@ -6,7 +6,7 @@ import DayCard from "./cards/DayCard"
 
 function CalendarGrid() {
     const { getEventsByDay } = useEvents();
-    const currDate = useDay();
+    const currDate = useToday();
     
     const dayCardsData: { day: Date, events: CalendarEvent[] }[] = useMemo(() => 
         // generate DayCard for next 14 days
@@ -21,11 +21,11 @@ function CalendarGrid() {
     , [currDate, getEventsByDay]);
 
     return (
-        <table className="grid grid-rows-2 grid-cols-7">
-            {dayCardsData.map((dayCardData) => 
-                <DayCard {...dayCardData}></DayCard>
+        <div className="grid grid-rows-2 grid-cols-7">
+            {dayCardsData.map((dayCardData, i) => 
+                <DayCard key={`DayCard-${i}`} {...dayCardData}></DayCard>
             )}
-        </table>
+        </div>
     );
 }
 
