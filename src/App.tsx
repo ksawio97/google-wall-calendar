@@ -10,7 +10,7 @@ function App() {
         <div className="w-screen h-screen flex flex-col">
             <TopBar></TopBar> 
             <CalendarGrid></CalendarGrid>
-            { today && <DayEventsDetailsGrid day={/* TODO pass closest day with any event */today}></DayEventsDetailsGrid> }
+            { today && <DayEventsDetailsGrid day={/* TODO pass closest day with any event */today}></DayEventsDetailsGrid>}
         </div>
     );
 }
