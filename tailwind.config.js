@@ -3,6 +3,9 @@ module.exports = {
   content: [
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
+    safelist: [ {
+        pattern: /(bg|text)-(.+)-(\d+)/,
+    }, ],
   theme: {
     extend: {},
   },

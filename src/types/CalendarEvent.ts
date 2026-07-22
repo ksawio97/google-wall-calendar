@@ -1,10 +1,9 @@
-import CalendarEventType from "./CalendarEventType";
-
 type CalendarEvent = {
+    id: string;
     title: string;
     start: Date;
     end: Date;
-    type?: CalendarEventType;
+    calendarId: string;
 };
 
 export default CalendarEvent;

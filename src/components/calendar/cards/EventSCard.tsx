@@ -1,11 +1,19 @@
+import { useCalendars } from "hooks/useCalendars"
+import { useMemo } from "react";
 import CalendarEvent from "types/CalendarEvent"
 
 type Props = { event: CalendarEvent }
 
 export default function EventSCard({ event }: Props) {
-  return (
+    const { getCalendarDataById } = useCalendars();
+
+    const { text_color, background_color } = useMemo(() => {
+        return getCalendarDataById(event.calendarId) || { name: "", text_color: "text-slate-700", background_color: "" };
+    }, [event.calendarId, getCalendarDataById]);
+
+    return (
     <li 
-        className={`${event.type?.bgcolor || "bg-slate-600"} ${event.type?.txtcolor || "text-slate-200"}
+        className={`${background_color} ${text_color}
             p-2 rounded-md
             overflow-hidden overflow-ellipsis`}>
         {event.title}

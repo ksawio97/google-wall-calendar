@@ -1,28 +1,50 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo, ReactNode } from 'react';
+import { CalendarEventChanges, calendarService } from 'services/CalendarService';
 import CalendarEvent from 'types/CalendarEvent';
-import mockEvents from 'utils/mockEvents';
 
-export default function useEvents() {
+interface EventsContextType {
+    getEventsByDay: (day: Date) => CalendarEvent[];
+}
+
+const EventsContext = createContext<EventsContextType | null>(null);
+
+export const EventsProvider = ({ children }: { children: ReactNode }) => {
     const [events, setEvents] = useState<CalendarEvent[]>([]);
-
+    
     useEffect(() => {
-        // mock events
-        setEvents(mockEvents());
+        // Handling your TODO: Added, Changed, and Deleted
+        const handleAdded = (newEvents: CalendarEvent[]) => {
+            setEvents(prev => {
+                return [...prev, ...newEvents];
+            });
+        };
+
+        const handleChanged = (changeEvents: CalendarEventChanges[]) => {
+        };
+        const handleDeleted = (eventsToDelete: string[]) => {
+        };
+        const unsubscribeFuncs = [
+        // Attach the listeners to your service
+        calendarService.subscribe(['events_added', handleAdded]),
+        calendarService.subscribe(['events_changed', handleChanged]),
+        calendarService.subscribe(['events_deleted', handleDeleted])
+        ];
+        // Cleanup on unmount
+        return () => {
+            unsubscribeFuncs.forEach((unsubscribe) => unsubscribe());
+        };
     }, []);
 
-
+    // Your exact grouping logic, now computed globally
     const eventsByDate = useMemo(() => {
-        // Group the events into a dictionary by date (YYYY-MM-DD)
         const grouped = events.reduce((dictionary, event) => {
-            // so we include all days in CalendarEvent range 
             const currDate = new Date(event.start);
-            currDate.setHours(0,0,0,0);
+            currDate.setHours(0, 0, 0, 0);
             const endDate = new Date(event.end);
-            endDate.setHours(0,0,0,0);
+            endDate.setHours(0, 0, 0, 0);
 
-            for (currDate; currDate <= endDate; currDate.setDate(currDate.getDate() + 1)) {
-                // YYYY-MM-DD  
-                const dayKey = currDate.toLocaleDateString('en-CA');
+            for (let d = new Date(currDate); d <= endDate; d.setDate(d.getDate() + 1)) {
+                const dayKey = d.toLocaleDateString('en-CA');
                 if (!dictionary[dayKey]) {
                     dictionary[dayKey] = [];
                 }
@@ -32,12 +54,10 @@ export default function useEvents() {
             return dictionary;
         }, {} as Record<string, CalendarEvent[]>);
 
-        // Sort the arrays inside the dictionary by CalendarEvent start time
         for (const dateKey in grouped) {
-            grouped[dateKey].sort((a, b) => {
-                return a.start.getTime() - b.start.getTime(); 
-            });
+            grouped[dateKey].sort((a, b) => a.start.getTime() - b.start.getTime());
         }
+        
         return grouped;
     }, [events]);
 
@@ -46,5 +66,19 @@ export default function useEvents() {
         return eventsByDate[dayKey] || [];
     }, [eventsByDate]);
 
-    return { getEventsByDay };
+    return (
+        <EventsContext.Provider value={{ getEventsByDay }}>
+            {children}
+        </EventsContext.Provider>
+    );
+};
+
+export default function useEvents() {
+    const context = useContext(EventsContext);
+    
+    if (!context) {
+        throw new Error('useEvents must be used within an EventsProvider');
+    }
+    
+    return context;
 }

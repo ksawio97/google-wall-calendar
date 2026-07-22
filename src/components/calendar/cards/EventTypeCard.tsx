@@ -1,13 +1,13 @@
-import CalendarEventType from "types/CalendarEventType"
+import Calendar from "types/Calendar"
 
 type Props = {
-    eventType: CalendarEventType
+    calendar: Calendar 
 }
 
-export default function EventTypeCard({ eventType }: Props) {
+export default function EventTypeCard({ calendar }: Props) {
   return (
-    <p className={`p-2 h-min rounded-md ${eventType.bgcolor} ${eventType.txtcolor}`}>
-        {eventType.name}
+    <p className={`p-2 h-min rounded-md ${calendar.background_color} ${calendar.text_color}`}>
+        {calendar.name}
     </p>
   )
 }

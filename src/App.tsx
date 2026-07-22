@@ -6,6 +6,7 @@ import './index.css';
 
 function App() {
     const today = useToday();
+
     return (
         <div className="w-screen h-screen flex flex-col">
             <TopBar></TopBar> 

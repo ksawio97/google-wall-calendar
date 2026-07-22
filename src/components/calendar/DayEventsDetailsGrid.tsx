@@ -1,4 +1,5 @@
 import DateDisplay from "components/date/DateDisplay"
+import { useCalendars } from "hooks/useCalendars";
 import useEvents from "hooks/useEvents"
 import { useEffect, useMemo } from "react";
 import EventDetailsCard from "./cards/EventDetailsCard";
@@ -16,6 +17,8 @@ export default function DayEventsDetailsGrid({ day }: Props) {
     , [day, getEventsByDay]);
 
 
+    const { getCalendarDataById } = useCalendars();
+
     return events.length === 0 ? (<></>) : 
         (<div className="flex-1 h-full overflow-y-auto flex flex-col bg-gray-700 rounded-md text-gray-900 m-2 p-4 gap-4">
             <div className="flex flex-row text-lg text-white gap-2">
@@ -23,9 +26,11 @@ export default function DayEventsDetailsGrid({ day }: Props) {
                 <div className="w-0.5 bg-white h-auto"></div>
                 <div className="overflow-hidden flex flex-row items-center gap-4">
                     <p>{events.length} {events.length == 1 ? "event" : "events"} scheduled</p>
-                    {events.map((event, i) => 
-                        event.type && <EventTypeCard key={`EventTypeCard-${i}`} eventType={event.type}></EventTypeCard>
-                    )}
+                    {events.map((event, i) => { 
+                        const calendar = getCalendarDataById(event.calendarId);
+
+                        return ( calendar ? <EventTypeCard key={`EventTypeCard-${i}`} calendar={calendar}></EventTypeCard> : <></>);
+                    })}
                 </div>
             </div>
             <div className="w-auto bg-white h-0.5"></div>

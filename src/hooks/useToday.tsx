@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 
+// TODO share data between all instances
 export default function useToday() {
   const [currentDate, setCurrentDate] = useState(new Date());
 
