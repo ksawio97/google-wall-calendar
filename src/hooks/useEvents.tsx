@@ -9,25 +9,65 @@ interface EventsContextType {
 const EventsContext = createContext<EventsContextType | null>(null);
 
 export const EventsProvider = ({ children }: { children: ReactNode }) => {
-    const [events, setEvents] = useState<CalendarEvent[]>([]);
+    const [events, setEvents] = useState<Map<string,CalendarEvent>>(new Map());
     
     useEffect(() => {
-        // Handling your TODO: Added, Changed, and Deleted
         const handleAdded = (newEvents: CalendarEvent[]) => {
+
             setEvents(prev => {
-                return [...prev, ...newEvents];
+                const newMap = new Map(prev);
+                for (const event of newEvents) {
+                    if (!newMap.has(event.id)) {
+                        newMap.set(event.id, event);
+                    }
+                }
+                return newMap;
             });
         };
 
-        const handleChanged = (changeEvents: CalendarEventChanges[]) => {
+        const handleChanged = (changedEvents: CalendarEventChanges[]) => {
+
+            setEvents(prev => {
+                const newMap = new Map(prev);
+                for (const event of changedEvents) {
+                    if (newMap.has(event.id)) {
+                        // Remove any keys that are undefined from the incoming event
+                        const cleanedUpdates = Object.fromEntries(
+                            Object.entries(event).filter(([_, value]) => value !== undefined)
+                        );
+                        // merge
+                        newMap.set(event.id, {
+                            ...newMap.get(event.id)!!,
+                            ...cleanedUpdates
+                        });                    
+                    } else {
+                        console.error(`Can't apply modifications to event: ${event.id}, because it doesn't exist`);
+                    }
+            }
+                return newMap;
+            });
         };
         const handleDeleted = (eventsToDelete: string[]) => {
+            setEvents((prev) => {
+                const newMap = new Map(prev);
+                for (const toDeleteId of eventsToDelete) {
+                    if (newMap.has(toDeleteId))
+                        newMap.delete(toDeleteId);
+                }
+
+                return newMap;
+            });
+        };
+
+        const handleDisconnect = () => {
+            setEvents(new Map());
         };
         const unsubscribeFuncs = [
         // Attach the listeners to your service
         calendarService.subscribe(['events_added', handleAdded]),
         calendarService.subscribe(['events_changed', handleChanged]),
-        calendarService.subscribe(['events_deleted', handleDeleted])
+        calendarService.subscribe(['events_deleted', handleDeleted]),
+        calendarService.subscribe(['disconnect', handleDisconnect])
         ];
         // Cleanup on unmount
         return () => {
@@ -37,7 +77,7 @@ export const EventsProvider = ({ children }: { children: ReactNode }) => {
 
     // Your exact grouping logic, now computed globally
     const eventsByDate = useMemo(() => {
-        const grouped = events.reduce((dictionary, event) => {
+        const grouped = [...events.values()].reduce((dictionary, event) => {
             const currDate = new Date(event.start);
             currDate.setHours(0, 0, 0, 0);
             const endDate = new Date(event.end);

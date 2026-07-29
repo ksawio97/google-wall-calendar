@@ -49,10 +49,12 @@ async function startServer() {
         // Setup the WebSocket connections
         io.on('connection', (socket) => {
             console.log('Frontend connected to WebSockets! ID:', socket.id);
-            
+             
             const initData = eventsListener.getEvents();
-            socket.emit("events_added", initData);
-            console.log('events_added: ', initData);
+            if (initData.length > 0) {
+                console.log('socket connection events_added: ', initData); 
+                socket.emit("events_added", initData);
+            }
 
             socket.on('disconnect', () => {
                 console.log('Frontend disconnected:', socket.id);

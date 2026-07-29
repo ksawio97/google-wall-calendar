@@ -9,12 +9,12 @@ export type EventSubscribe =
 ["events_added", (events: CalendarEvent[]) => void]
 | ["events_changed", (eventsChanges: CalendarEventChanges[]) => void]
 | ["events_deleted", (eventsIds: string[]) => void]
-
+| ["disconnect", () => void]
 
 class CalendarService {
     private socket: Socket | null = null;
     private readonly SERVER_URL = 'http://localhost:3001';
-    
+
     public constructor() {
         this.socket = io(this.SERVER_URL);
 
@@ -22,10 +22,16 @@ class CalendarService {
             console.log('✅ Frontend connected to WebSocket');
         });
     }
+
     public subscribe(data: EventSubscribe): () => void {
+
         const action = (rawData: any[]) => {
+            if (data[0] === 'disconnect') {
+                data[1]();                
+                return;
+            }
+            // parse data depending on action
             let params;
-            // parse depending on action type
             switch (data[0]) {
                 case "events_added":
                     params = rawData.map(data => ({
@@ -42,7 +48,7 @@ class CalendarService {
                     }));
                     break;
                 case "events_deleted":
-                    params = rawData as string[];                    
+                    params = rawData as string[]; 
                     break;
             }
 

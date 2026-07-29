@@ -19,7 +19,7 @@ function DayCard({ day, events }: DayCardProps) {
                     <EventSCard key={`EventSCard-${i}`} event={event}></EventSCard>
                 )}
                 { events.length > 3 && <p className="text-white px-2">+ {events.length - 3} more</p>}
-            </ul> : <p className="text-white p-2">Free day</p>}
+            </ul> : <p className="text-white p-2 min-h-28">Free day</p>}
         </div> 
     );
 }
