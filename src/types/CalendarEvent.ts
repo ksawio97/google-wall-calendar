@@ -4,6 +4,7 @@ type CalendarEvent = {
     start: Date;
     end: Date;
     calendarId: string;
+    isAllDay: boolean;
 };
 
 export default CalendarEvent;

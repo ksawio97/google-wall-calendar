@@ -17,6 +17,7 @@ type Event = {
     title: string;
     start: Date;
     end: Date;
+    isAllDay: boolean;
 }
 
 
@@ -79,8 +80,14 @@ async function getEventsData() {
 
         const events: EventConn[] = responses.flatMap((res, i) => {
             return !res.data.items ? [] : res.data.items.map<EventConn>(item => {
-                const startString = item.start?.dateTime || item.start?.date || "";
-                const endString = item.end?.dateTime || item.end?.date || "";
+                const isAllDay = item.start?.date !== undefined;
+                const startString = item.start?.dateTime || (item.start?.date ? `${item.start.date}T00:00:00` : "");
+                const endString = item.end?.dateTime || (item.end?.date ? `${item.end.date}T00:00:00` : "");
+                
+                const endDate = new Date(endString);
+                // so the end time will be inclusive
+                if (isAllDay)
+                    endDate.setTime(endDate.getTime() - 1);
 
                 return {
                     calendarId: calendars[i].calendarId,
@@ -88,7 +95,8 @@ async function getEventsData() {
                     title: item.summary || "",
                     // Convert the strings into real Date objects to satisfy the type
                     start: startString ? new Date(startString) : new Date(),
-                    end: endString ? new Date(endString) : new Date()
+                    end: endDate,
+                    isAllDay: isAllDay,
                 };
             }); 
         });

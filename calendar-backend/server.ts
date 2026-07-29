@@ -12,7 +12,7 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: 'http://localhost:3000',
-    methods: ['GET', 'POST']
+    methods: ['GET']
   }
 });
 
@@ -37,7 +37,7 @@ async function startServer() {
                 
                 for (const [data, emitId] of [[added, "events_added"], [deleted, "events_deleted"], [changed, "events_changed"]] as [any[], string][]) {
                     if (data.length > 0) {
-                        console.log(`Emit: ${emitId}`);
+                        console.log(`${emitId}: `, data);
                         io.emit(emitId, data); 
                     }
                 }  
@@ -49,8 +49,11 @@ async function startServer() {
         // Setup the WebSocket connections
         io.on('connection', (socket) => {
             console.log('Frontend connected to WebSockets! ID:', socket.id);
-            socket.emit("events_added", eventsListener.getEvents());
             
+            const initData = eventsListener.getEvents();
+            socket.emit("events_added", initData);
+            console.log('events_added: ', initData);
+
             socket.on('disconnect', () => {
                 console.log('Frontend disconnected:', socket.id);
             });
