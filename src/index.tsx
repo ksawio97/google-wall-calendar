@@ -4,16 +4,19 @@ import './index.css';
 import App from './App';
 import { CalendarProvider } from 'hooks/useCalendars';
 import { EventsProvider } from 'hooks/useEvents';
+import { TodayProvider } from 'hooks/useToday';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-      <EventsProvider>
-          <CalendarProvider>
-              <App/>
-          </CalendarProvider>
-      </EventsProvider>
+      <TodayProvider>
+          <EventsProvider>
+              <CalendarProvider>
+                  <App/>
+              </CalendarProvider>
+          </EventsProvider>
+      </TodayProvider>
   </React.StrictMode>
 );

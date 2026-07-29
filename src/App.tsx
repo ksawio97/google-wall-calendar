@@ -1,17 +1,17 @@
 import CalendarGrid from 'components/calendar/CalendarGrid';
 import DayEventsDetailsGrid from 'components/calendar/DayEventsDetailsGrid';
-import useToday from 'hooks/useToday';
+import useEvents from 'hooks/useEvents';
 import TopBar from './components/TopBar';
 import './index.css';
 
 function App() {
-    const today = useToday();
+    const { closestEventDayDateKey } = useEvents()
 
     return (
         <div className="w-screen h-screen flex flex-col">
             <TopBar></TopBar> 
             <CalendarGrid></CalendarGrid>
-            { today && <DayEventsDetailsGrid day={/* TODO pass closest day with any event */today}></DayEventsDetailsGrid>}
+            { closestEventDayDateKey && <DayEventsDetailsGrid day={new Date(closestEventDayDateKey)}></DayEventsDetailsGrid>}
         </div>
     );
 }

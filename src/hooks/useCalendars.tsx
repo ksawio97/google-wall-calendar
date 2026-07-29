@@ -4,7 +4,6 @@ import Calendar from "types/Calendar";
 
 interface CalendarContextType {
   getCalendarDataById: (calendarId: string) => Calendar | undefined;
-  setCalendars: (calendars: Calendar[]) => void; 
 }
 
 const CalendarContext = createContext<CalendarContextType | null>(null);
@@ -29,13 +28,13 @@ export const CalendarProvider = ({ children }: { children: ReactNode }) => {
   }, [calendarMap]);
 
   return (
-    <CalendarContext.Provider value={{ getCalendarDataById, setCalendars }}>
+    <CalendarContext.Provider value={{ getCalendarDataById }}>
       {children}
     </CalendarContext.Provider>
   );
 };
 
-// 3. Your refactored hook
+// Your refactored hook
 export const useCalendars = () => {
   const context = useContext(CalendarContext);
   
@@ -45,6 +44,5 @@ export const useCalendars = () => {
   
   return {
     getCalendarDataById: context.getCalendarDataById,
-    setCalendars: context.setCalendars, // Exposed so your main App can fetch and set the data
   };
 };

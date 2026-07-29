@@ -1,16 +1,17 @@
-import React, { createContext, useContext, useState, useEffect, useCallback, useMemo, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, useMemo, ReactNode } from 'react';
 import { CalendarEventChanges, calendarService } from 'services/CalendarService';
 import CalendarEvent from 'types/CalendarEvent';
 
 interface EventsContextType {
     getEventsByDay: (day: Date) => CalendarEvent[];
+    closestEventDayDateKey: string | undefined;
 }
 
 const EventsContext = createContext<EventsContextType | null>(null);
 
 export const EventsProvider = ({ children }: { children: ReactNode }) => {
     const [events, setEvents] = useState<Map<string,CalendarEvent>>(new Map());
-    
+
     useEffect(() => {
         const handleAdded = (newEvents: CalendarEvent[]) => {
 
@@ -76,7 +77,7 @@ export const EventsProvider = ({ children }: { children: ReactNode }) => {
     }, []);
 
     // Your exact grouping logic, now computed globally
-    const eventsByDate = useMemo(() => {
+    const [eventsByDate, closestEventDayDateKey] = useMemo(() => {
         const grouped = [...events.values()].reduce((dictionary, event) => {
             const currDate = new Date(event.start);
             currDate.setHours(0, 0, 0, 0);
@@ -93,12 +94,16 @@ export const EventsProvider = ({ children }: { children: ReactNode }) => {
 
             return dictionary;
         }, {} as Record<string, CalendarEvent[]>);
-
+        
+        let closestEventDayDateKey;
         for (const dateKey in grouped) {
             grouped[dateKey].sort((a, b) => a.start.getTime() - b.start.getTime());
+            if (!closestEventDayDateKey && grouped[dateKey].length > 0) {
+                closestEventDayDateKey = dateKey;
+            }
         }
         
-        return grouped;
+        return [grouped, closestEventDayDateKey];
     }, [events]);
 
     const getEventsByDay = useCallback((day: Date) => {
@@ -107,7 +112,7 @@ export const EventsProvider = ({ children }: { children: ReactNode }) => {
     }, [eventsByDate]);
 
     return (
-        <EventsContext.Provider value={{ getEventsByDay }}>
+        <EventsContext.Provider value={{ getEventsByDay, closestEventDayDateKey }}>
             {children}
         </EventsContext.Provider>
     );
