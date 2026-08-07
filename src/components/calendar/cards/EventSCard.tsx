@@ -15,7 +15,7 @@ export default function EventSCard({ event }: Props) {
     <li 
         className={`${background_color} ${text_color}
             p-2 rounded-md
-            overflow-hidden overflow-ellipsis`}>
+            truncate`}>
         {event.title}
     </li>
   )

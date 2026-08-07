@@ -14,7 +14,7 @@ function CalendarGrid() {
     , [currDate, getEventsByDay]);
 
     return (
-        <div className="grid grid-rows-2 grid-cols-7">
+        <div className="min-h-0 h-7/12 grid grid-rows-2 grid-cols-7 gap-y-4 gap-x-3 overflow-y-auto px-4 py-2">
             {dayCardsData.map((dayCardData, i) => 
                 <DayCard key={`DayCard-${i}`} {...dayCardData}></DayCard>
             )}

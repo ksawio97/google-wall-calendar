@@ -8,7 +8,7 @@ function App() {
     const { closestEventDayDateKey } = useEvents()
 
     return (
-        <div className="w-screen h-screen flex flex-col">
+        <div className="w-screen h-screen flex flex-col bg-surface gap-4 p-4">
             <TopBar></TopBar> 
             <CalendarGrid></CalendarGrid>
             { closestEventDayDateKey && <DayEventsDetailsGrid day={new Date(closestEventDayDateKey)}></DayEventsDetailsGrid>}

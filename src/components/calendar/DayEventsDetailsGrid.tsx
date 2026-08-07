@@ -1,7 +1,9 @@
 import DateDisplay from "components/date/DateDisplay"
+import HorizontalDivider from "components/HorizontalDivider";
 import { useCalendars } from "hooks/useCalendars";
 import useEvents from "hooks/useEvents"
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
+import CalendarEvent from "types/CalendarEvent";
 import EventDetailsCard from "./cards/EventDetailsCard";
 import EventTypeCard from "./cards/EventTypeCard";
 
@@ -9,32 +11,37 @@ type Props = {
     day: Date
 }
 
+function getCalendarIds(events: CalendarEvent[]) {
+    return Array.from(new Set(events.map(e => e.calendarId)));
+
+}
+
 export default function DayEventsDetailsGrid({ day }: Props) {
     const { getEventsByDay } = useEvents();
 
-    const events = useMemo(() => 
-        getEventsByDay(day)
-    , [day, getEventsByDay]);
+    const [events, calendarIds] = useMemo(() => { 
+        const events = getEventsByDay(day);
+        return [events, getCalendarIds(events)];
+    } , [day, getEventsByDay]);
 
 
     const { getCalendarDataById } = useCalendars();
 
     return events.length === 0 ? (<></>) : 
-        (<div className="flex-1 h-full overflow-y-auto flex flex-col bg-gray-700 rounded-md text-gray-900 m-2 p-4 gap-4">
+        (<div className="min-h-0 h-1/4 overflow-y-auto bg-surface-container p-4 rounded-md text-gray-900 mx-2 gap-3 flex flex-col">
             <div className="flex flex-row text-lg text-white gap-2">
                 <DateDisplay day={day}></DateDisplay>
-                <div className="w-0.5 bg-white h-auto"></div>
-                <div className="overflow-hidden flex flex-row items-center gap-4">
+                <HorizontalDivider/>
+                <div className="overflow-hidden flex flex-row items-center gap-4 text-on-surface-variant">
                     <p>{events.length} {events.length == 1 ? "event" : "events"} scheduled</p>
-                    {events.map((event, i) => { 
-                        const calendar = getCalendarDataById(event.calendarId);
+                    {calendarIds.map((calendarId, i) => { 
+                        const calendar = getCalendarDataById(calendarId);
 
                         return ( calendar ? <EventTypeCard key={`EventTypeCard-${i}`} calendar={calendar}></EventTypeCard> : <></>);
                     })}
                 </div>
             </div>
-            <div className="w-auto bg-white h-0.5"></div>
-            <div className="flex flex-row gap-2 h-full items-center">
+            <div className="flex flex-row gap-2 flex-1 place-items-center">
                 {events.map((event, i) => 
                     <EventDetailsCard key={`EventDetailsCard-${i}`} event={event}></EventDetailsCard>
                 )}

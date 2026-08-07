@@ -22,7 +22,7 @@ export default function EventDetailsCard({ event }: Props) {
     }, [event.calendarId, getCalendarDataById]);
 
     return (
-        <div className="flex flex-row max-h-3/5 rounded-md overflow-hidden h-auto">
+        <div className="flex flex-row rounded-md overflow-hidden">
             <div className={`w-2 bg-current ${text_color}`} />
             <div className={`flex flex-col px-4 pt-3 min-w-48 ${background_color} pb-6`}>
                 <p className="text-gray-400 py-1">{event.isAllDay ? 'Full day': timeText}</p>
